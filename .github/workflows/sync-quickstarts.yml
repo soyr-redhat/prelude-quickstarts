@@ -160,6 +160,4 @@ jobs:
 
           ---
           *This PR was created automatically. Review and merge when ready.*' \
-            --label quickstart,automated,prelude \
-            --reviewer sbowerma \
-            --assignee sbowerma
+            --label quickstart,automated,prelude

@@ -16,7 +16,7 @@ metadata:
     app.opendatahub.io/rhods-dashboard: 'true'
     platform.opendatahub.io/part-of: dashboard
 spec:
-  description: Build a private, document-aware AI assistant using RAG. Data never leaves the environment.
+  description: Build a private, document-aware AI assistant using RAG. Data never leaves your environment.
   displayName: Prelude -2- Talk to Your Own Data (RAG)
   appName: rhoai
   durationMinutes: 20

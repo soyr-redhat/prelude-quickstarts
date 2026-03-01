@@ -17,13 +17,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout rhoai-cluster-pool repo
+      - name: Checkout rhoai-cluster-pool fork
         uses: actions/checkout@v4
         with:
-          repository: eformat/rhoai-cluster-pool
+          repository: soyr-redhat/rhoai-cluster-pool
           token: ${{ secrets.RHOAI_CLUSTER_POOL_PAT }}
           path: rhoai-cluster-pool
           fetch-depth: 0
+
+      - name: Sync fork with upstream
+        run: |
+          cd rhoai-cluster-pool
+          git remote add upstream https://github.com/eformat/rhoai-cluster-pool.git
+          git fetch upstream
+          git checkout main
+          git merge upstream/main --no-edit || echo "Already up to date"
+          git push origin main
 
       - name: Get changed quickstart files
         id: changed-files
@@ -87,54 +96,70 @@ jobs:
           echo "Updated kustomization.yaml:"
           cat kustomization.yaml
 
-      - name: Create Pull Request
+      - name: Commit and push changes to fork
         if: steps.changed-files.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.RHOAI_CLUSTER_POOL_PAT }}
-          path: rhoai-cluster-pool
-          commit-message: |
-            Add/Update Prelude quickstarts
+        run: |
+          cd rhoai-cluster-pool
 
-            Auto-synced from prelude_quickstarts repo
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-            Changed files:
-            ${{ steps.changed-files.outputs.files }}
-          branch: quickstart-sync-${{ github.run_number }}
-          delete-branch: true
-          title: '[Auto] Sync Prelude Quickstarts'
-          body: |
-            ## 🚀 Automated Quickstart Sync
+          # Create new branch
+          BRANCH_NAME="quickstart-sync-${{ github.run_number }}"
+          git checkout -b "$BRANCH_NAME"
 
-            This PR was automatically created by the prelude_quickstarts repository.
+          # Stage and commit changes
+          git add applications/quickstarts/input-prelude/
+          git commit -m "Add/Update Prelude quickstarts
 
-            ### Changed Files
-            ```
-            ${{ steps.changed-files.outputs.files }}
-            ```
+          Auto-synced from prelude_quickstarts repo
 
-            ### What this does
-            - Syncs new/updated quickstart YAML files from `prelude_quickstarts/active/`
-            - Updates `applications/quickstarts/input-prelude/kustomization.yaml` to include all quickstarts
+          Changed files:
+          ${{ steps.changed-files.outputs.files }}"
 
-            ### Review Checklist
-            - [ ] Quickstart YAML is valid
-            - [ ] Naming follows convention: `prelude-X-topic.yaml`
-            - [ ] displayName follows pattern: `Prelude -X- Title`
-            - [ ] Tasks are clear and actionable
-            - [ ] Prerequisites are listed
-            - [ ] Review/verification steps included
+          # Push to fork
+          git push origin "$BRANCH_NAME"
 
-            **Source:** ${{ github.event.head_commit.message }}
-            **Commit:** ${{ github.sha }}
+          # Save branch name for next step
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        id: commit-push
 
-            ---
-            *This PR was created automatically. Review and merge when ready.*
-          labels: |
-            quickstart
-            automated
-            prelude
-          reviewers: |
-            sbowerma
-          assignees: |
-            sbowerma
+      - name: Create Pull Request to upstream
+        if: steps.changed-files.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RHOAI_CLUSTER_POOL_PAT }}
+        run: |
+          gh pr create \
+            --repo eformat/rhoai-cluster-pool \
+            --head soyr-redhat:${{ steps.commit-push.outputs.branch_name }} \
+            --title '[Auto] Sync Prelude Quickstarts' \
+            --body '## 🚀 Automated Quickstart Sync
+
+          This PR was automatically created by the prelude_quickstarts repository.
+
+          ### Changed Files
+          ```
+          ${{ steps.changed-files.outputs.files }}
+          ```
+
+          ### What this does
+          - Syncs new/updated quickstart YAML files from `prelude_quickstarts/active/`
+          - Updates `applications/quickstarts/input-prelude/kustomization.yaml` to include all quickstarts
+
+          ### Review Checklist
+          - [ ] Quickstart YAML is valid
+          - [ ] Naming follows convention: `prelude-X-topic.yaml`
+          - [ ] displayName follows pattern: `Prelude -X- Title`
+          - [ ] Tasks are clear and actionable
+          - [ ] Prerequisites are listed
+          - [ ] Review/verification steps included
+
+          **Source:** ${{ github.event.head_commit.message }}
+          **Commit:** ${{ github.sha }}
+
+          ---
+          *This PR was created automatically. Review and merge when ready.*' \
+            --label quickstart,automated,prelude \
+            --reviewer sbowerma \
+            --assignee sbowerma

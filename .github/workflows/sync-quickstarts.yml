@@ -34,6 +34,26 @@ jobs:
           git merge upstream/main --no-edit || echo "Already up to date"
           git push origin main
 
+      - name: Cleanup old quickstart-sync branches
+        run: |
+          cd rhoai-cluster-pool
+
+          # Fetch all remote branches
+          git fetch origin --prune
+
+          # Delete old quickstart-sync-* branches from remote (keep last 3)
+          OLD_BRANCHES=$(git branch -r | grep 'origin/quickstart-sync-' | sed 's|origin/||' | sort -V | head -n -3)
+
+          if [ -n "$OLD_BRANCHES" ]; then
+            echo "Deleting old branches:"
+            echo "$OLD_BRANCHES"
+            for branch in $OLD_BRANCHES; do
+              git push origin --delete "$branch" || echo "Failed to delete $branch (might be already gone)"
+            done
+          else
+            echo "No old branches to clean up"
+          fi
+
       - name: Get changed quickstart files
         id: changed-files
         run: |

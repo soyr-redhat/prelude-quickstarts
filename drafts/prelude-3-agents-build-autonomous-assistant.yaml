@@ -1,0 +1,268 @@
+---
+apiVersion: console.openshift.io/v1
+kind: OdhQuickStart
+metadata:
+  name: prelude-agents-build-autonomous-assistant
+  namespace: redhat-ods-applications
+  annotations:
+    opendatahub.io/categories: 'Getting started,AI Agents,Automation'
+    platform.opendatahub.io/instance.name: default-dashboard
+    internal.config.kubernetes.io/previousNamespaces: default
+    platform.opendatahub.io/version: 3.0.0
+    platform.opendatahub.io/type: OpenShift AI Self-Managed
+  labels:
+    app: rhods-dashboard
+    app.kubernetes.io/part-of: rhods-dashboard
+    app.opendatahub.io/rhods-dashboard: 'true'
+    platform.opendatahub.io/part-of: dashboard
+spec:
+  description: Build an autonomous AI agent that can use tools, make decisions, and solve complex tasks.
+  displayName: Prelude -3- Build an Autonomous AI Agent
+  appName: rhoai
+  durationMinutes: 25
+  icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAFnCAIAAABmUqp4AAAeCnpUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjarZtpdhw3loX/YxW9BMzDch6mc3oHvfz+LpJUWyr5tO0q0WKmk8EI4A13ACB3/ue/r/sv/rRYvcul9Tpq9fzJI49ovOn+88fe9+Dz+/75KH+9Cz9/7mr7eht5Tbymzw96/byG78+/fuH7NRjvyh9u1NfXD+bPPxj58xr7LzeKn5ekEen9/rrR+LpRip8fhK8b2Gdavo7e/jiFeT6vX7//CQN/nb7l/vOw/+X/G9HbheekGE8KyfM9pvwZQNLf4JLxpvE9pMaFIdX3SeJ7TN9TIiC/i5P/w6jcr1n58e6XrGz7EaOfkpLq5wrHBz8Hs/54/e3nofzy+dcN3QvxH56c1o9y+OnzMMjrL9P5/nvv7u7e85md5UpI69ekvqf43nEhN8np/Vrlq/G38L69r8FXd1TvIuXbLz/5Wjw5kpYbctjBwg3nva6wGGKOJ5KSGOMiUfqsk6IRV/KOPGV9hRtbGmmnTrYW6U18Gn+MJbznjve4FToP3oErY+Bmgd+ITt/+E19/eqN7VfIhKJjbXqwYV1RTMAxlTt+5ioSE+11H5QX4++vXP8prIoPlhbkzQfPzc4tZwldtqY7SS3TiwsLrp9dC2183IEQ8uzCYkMiAryGVUINvMbYQiGMnP8aNOk0TJykIpcTNKGNOqZKcHvVsfqeFd20s8fMxmEUiCs3USM1IRq4ywEb9tNypISup5FJKLa30MorVVHMttdZWBX7WUsuttNpa620066nnXnrtrXfXR7cRRwIcy6ijjT7GMOOhxp2N3zYuMJtxpplnmXW22eeYtiiflVdZdbXV3RrLdtxpgxO77rb7HttOOJTSyaecetrpZxy7lNpNN99y622333HtR9aC+6T1X77+etbCd9biy5QubD+yxq+29n2LIDgpyhkZizmQ8aYMUNBROfM95BydUqec+QGOpRIZZVFydlDGyGA+IZYbfuTu/zL3U95czv9W3uJ35pxS95/InFPq/iRz/5q332TtQfDyyb0MqQ0VVJ9oPy6y2PkPTvrrr+4vXRgblFO7um6EHec4m4FpgqskJn4Hlb22wHLWQ1ZgLbI26zj39Eo64y55Wx4Uwyak5ZRbRs6nrZl8BzRyX72WMLnRFtqT23WbrVEKUallB
+  introduction: |-
+    ### Experience 3: Build an Autonomous AI Agent
+
+    **What is an AI Agent?**
+    An AI agent is a system that can autonomously use tools, make decisions, and complete multi-step tasks.
+    Unlike simple chatbots, agents can plan, execute, and adapt their approach.
+
+    **What will be accomplished:**
+    - Create an agent with access to tools (calculator, web search, file operations)
+    - Watch it plan and execute a multi-step task
+    - See it handle errors and adapt its approach
+    - Understand the agent decision-making loop
+
+    **Why this matters:**
+    - Agents can automate complex workflows
+    - They reason about which tools to use and when
+    - They can handle tasks that require multiple steps
+    - All decisions and actions are transparent and auditable
+
+  prerequisites:
+    - Completed "Prelude -2- Talk to Your Own Data (RAG)" quickstart
+    - Access to the OpenShift cluster
+    - Admin credentials (username and password)
+    - Basic understanding of LLMs and tool calling
+
+  tasks:
+    - description: |-
+        ### Access the Agent Interface
+
+        In this task, navigate to the agent-enabled interface where AI agents can be created and managed.
+
+        1. Navigate to the **OpenShift Console** from the hamburger menu titled "Applications" in the top right corner
+
+        2. Go to **Home → Projects**
+
+        3. Find and select the **agent** project (or relevant project with agent capabilities)
+
+        4. In the left navigation, click **Networking → Routes**
+
+        5. Click on the agent interface route URL
+
+        6. Login with OpenShift using the **admin** user and password
+
+        **What is an agent?**
+        An agent is more than a chatbot. It can:
+        - Access external tools (calculators, databases, APIs)
+        - Make multi-step plans
+        - Execute actions autonomously
+        - Self-correct when errors occur
+
+      title: Task 1 - Access the Agent Interface
+      review:
+        instructions: |-
+          Did you successfully access the agent interface?
+
+        failedTaskHelp: If access failed, verify the project name and ensure the route is active. Check that the admin credentials are correct.
+      summary:
+        success: >-
+          Great! The agent interface is ready.
+        failed: Access failed. Verify the project and route settings.
+
+    - description: |-
+        ### Create an Agent with Tools
+
+        Now create an agent and give it access to tools.
+
+        **Available tools might include:**
+        - **Calculator:** Perform mathematical operations
+        - **Web Search:** Look up current information
+        - **File Operations:** Read/write files
+        - **Database Query:** Search structured data
+        - **API Calls:** Interact with external services
+
+        **Steps:**
+
+        1. In the agent interface, look for **Create Agent** or **New Agent**
+
+        2. **Configure the agent:**
+           - Name: "Task Solver"
+           - Description: "An agent that can solve multi-step problems"
+           - Select available tools (enable calculator, web search, etc.)
+
+        3. **Review the tool descriptions** - the agent will use these to decide which tool to call
+
+        4. **Save the agent configuration**
+
+        **What happens behind the scenes:**
+        The LLM is being given:
+        - A system prompt explaining its role as an agent
+        - Tool definitions (name, description, parameters)
+        - Instructions on how to use tools and when
+
+      title: Task 2 - Create and Configure the Agent
+      review:
+        instructions: |-
+          Was the agent created successfully with tools enabled?
+
+        failedTaskHelp: If creation failed, ensure at least one tool is selected. Verify that the agent framework is properly configured in the deployment.
+      summary:
+        success: >-
+          Perfect! The agent is created and has access to tools.
+        failed: Agent creation failed. Check tool configuration and try again.
+
+    - description: |-
+        ### Give the Agent a Multi-Step Task
+
+        Now test the agent with a task that requires planning and multiple tool uses.
+
+        **Example task:**
+        "What is the current population of New York City, and what is that number divided by the area in square miles?"
+
+        This requires:
+        1. Web search to find NYC population
+        2. Web search (or prior knowledge) to find NYC area
+        3. Calculator to perform division
+
+        **Steps:**
+
+        1. Start a conversation with the agent
+
+        2. Ask the multi-step question above (or create your own)
+
+        3. **Watch the agent work** - many interfaces show the "thinking" process, observe:
+           - The agent reasoning about what to do first
+           - Which tool it decides to call
+           - The tool's response
+           - The agent deciding what to do next
+
+        4. **See the final answer** after the agent completes all necessary steps
+
+        **The agent loop:**
+        1. Receive task
+        2. Decide which tool to use (or if done)
+        3. Call tool
+        4. Process tool result
+        5. Repeat until task is complete
+
+      title: Task 3 - Execute a Multi-Step Task
+      review:
+        instructions: |-
+          Did the agent successfully complete the multi-step task?
+
+        failedTaskHelp: If the agent failed, check if tools are responding correctly. Try a simpler task first (e.g., "What is 25 * 4?") to verify basic tool functionality.
+      summary:
+        success: >-
+          Excellent! The agent successfully planned and executed multiple steps.
+        failed: The agent couldn't complete the task. Verify tool connectivity.
+
+    - description: |-
+        ### Observe Agent Decision Making
+
+        The power of agents is in their ability to reason and adapt. Let's examine the decision-making process.
+
+        **Look for these elements in the agent's execution:**
+
+        1. **Planning:** The agent should explain its approach before taking action
+           - Example: "I need to search for NYC population first, then calculate the density"
+
+        2. **Tool Selection:** The agent chooses the right tool for each sub-task
+           - It should not call the calculator when it needs information
+           - It should not search the web for basic math
+
+        3. **Error Handling:** Give the agent a slightly ambiguous or error-prone task
+           - Example: "What is the square root of -1?" (may require clarification or error handling)
+           - Watch how it responds to unexpected tool results
+
+        4. **Transparency:** All tool calls and reasoning should be visible
+           - No "black box" decisions
+           - Each step is auditable
+
+        **Try this:**
+        Ask the agent a question that requires it to:
+        - Realize it needs more information
+        - Self-correct when a tool returns unexpected data
+        - Choose between multiple valid approaches
+
+      title: Task 4 - Understand Agent Reasoning
+      review:
+        instructions: |-
+          Can you see the agent's reasoning and tool decisions clearly?
+
+        failedTaskHelp: If the reasoning isn't visible, check the UI for a "Show Details" or "Debug Mode" toggle. Some interfaces hide this by default.
+      summary:
+        success: >-
+          Perfect! The agent's decision-making process is transparent and logical.
+        failed: Reasoning not visible. Look for a debug or detail view option.
+
+    - description: |-
+        ### Build a Custom Tool (Optional Advanced Task)
+
+        For those who want to go deeper, create a custom tool for the agent to use.
+
+        **Example custom tools:**
+        - Weather lookup for a specific location
+        - Database query for internal data
+        - File system operations
+        - Custom business logic (e.g., "calculate shipping cost")
+
+        **Steps (varies by platform):**
+
+        1. Navigate to the **Tools** or **Functions** configuration
+
+        2. **Define a new tool** with:
+           - Name: clear and descriptive
+           - Description: what it does and when to use it
+           - Parameters: what inputs it needs
+           - Implementation: the code or API endpoint
+
+        3. **Enable the tool** for your agent
+
+        4. **Test it** by asking the agent a question that requires the new tool
+
+        **What this demonstrates:**
+        Agents are extensible. Any API, database, or function can become a tool the agent can use autonomously.
+
+      title: Task 5 - Create a Custom Tool (Optional)
+      review:
+        instructions: |-
+          Did you successfully create and test a custom tool?
+
+        failedTaskHelp: Custom tool creation is advanced and optional. If stuck, skip to the conclusion. Refer to the platform documentation for tool creation specifics.
+      summary:
+        success: >-
+          Amazing! You've extended the agent with custom capabilities.
+        failed: Custom tool creation is optional. Proceed to conclusion.
+
+  conclusion: >-
+    Congratulations! An autonomous AI agent has been built and deployed.
+
+    **What was accomplished:**
+    - Created an agent with access to multiple tools
+    - Watched it plan and execute multi-step tasks
+    - Observed transparent decision-making and tool selection
+    - (Optional) Extended the agent with custom tools
+
+    **Key takeaway:**
+    Agents transform LLMs from conversational interfaces into autonomous task-solvers.
+
+    **Next steps:**
+    - Experiment with more complex tasks
+    - Build domain-specific tools for your use case
+    - Explore agent orchestration (multiple agents working together)
+    - Continue to Experience 4 (if available) or explore model fine-tuning
+
+  nextQuickStart: []

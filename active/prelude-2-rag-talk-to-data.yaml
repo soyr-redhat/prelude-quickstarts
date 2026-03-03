@@ -212,4 +212,5 @@ spec:
     - Continue to Experience 3 - Build an AI Agent
     - Explore the OpenShift AI model serving documentation
 
-  nextQuickStart: []
+  nextQuickStart:
+    - prelude-agents-build-autonomous-assistant

@@ -19,7 +19,7 @@ spec:
   description: Build an autonomous AI agent that can use tools, make decisions, and solve complex tasks.
   displayName: Prelude -3- Build an Autonomous AI Agent
   appName: rhoai
-  durationMinutes: 25
+  durationMinutes: 30
   icon: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaQAAAFnCAIAAABmUqp4AAAeCnpUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjarZtpdhw3loX/YxW9BMzDch6mc3oHvfz+LpJUWyr5tO0q0WKmk8EI4A13ACB3/ue/r/sv/rRYvcul9Tpq9fzJI49ovOn+88fe9+Dz+/75KH+9Cz9/7mr7eht5Tbymzw96/byG78+/fuH7NRjvyh9u1NfXD+bPPxj58xr7LzeKn5ekEen9/rrR+LpRip8fhK8b2Gdavo7e/jiFeT6vX7//CQN/nb7l/vOw/+X/G9HbheekGE8KyfM9pvwZQNLf4JLxpvE9pMaFIdX3SeJ7TN9TIiC/i5P/w6jcr1n58e6XrGz7EaOfkpLq5wrHBz8Hs/54/e3nofzy+dcN3QvxH56c1o9y+OnzMMjrL9P5/nvv7u7e85md5UpI69ekvqf43nEhN8np/Vrlq/G38L69r8FXd1TvIuXbLz/5Wjw5kpYbctjBwg3nva6wGGKOJ5KSGOMiUfqsk6IRV/KOPGV9hRtbGmmnTrYW6U18Gn+MJbznjve4FToP3oErY+Bmgd+ITt/+E19/eqN7VfIhKJjbXqwYV1RTMAxlTt+5ioSE+11H5QX4++vXP8prIoPlhbkzQfPzc4tZwldtqY7SS3TiwsLrp9dC2183IEQ8uzCYkMiAryGVUINvMbYQiGMnP8aNOk0TJykIpcTNKGNOqZKcHvVsfqeFd20s8fMxmEUiCs3USM1IRq4ywEb9tNypISup5FJKLa30MorVVHMttdZWBX7WUsuttNpa620066nnXnrtrXfXR7cRRwIcy6ijjT7GMOOhxp2N3zYuMJtxpplnmXW22eeYtiiflVdZdbXV3RrLdtxpgxO77rb7HttOOJTSyaecetrpZxy7lNpNN99y622333HtR9aC+6T1X77+etbCd9biy5QubD+yxq+29n2LIDgpyhkZizmQ8aYMUNBROfM95BydUqec+QGOpRIZZVFydlDGyGA+IZYbfuTu/zL3U95czv9W3uJ35pxS95/InFPq/iRz/5q332TtQfDyyb0MqQ0VVJ9oPy6y2PkPTvrrr+4vXRgblFO7um6EHec4m4FpgqskJn4Hlb22wHLWQ1ZgLbI26zj39Eo64y55Wx4Uwyak5ZRbRs6nrZl8BzRyX72WMLnRFtqT23WbrVEKUallB
   introduction: |-
     ### Experience 3: Build an Autonomous AI Agent
@@ -57,78 +57,133 @@ spec:
 
   tasks:
     - description: |-
-        ### Access the Agent Interface
+        ### Return to the Chat Interface
 
-        In this task, navigate to the agent-enabled interface where AI agents can be created and managed.
+        Good news! The agent capabilities use the same OpenWebUI interface from the RAG quickstart. Let's return there.
 
         1. Navigate to the **OpenShift Console** from the hamburger menu titled "Applications" in the top right corner
 
         2. Go to **Home → Projects**
 
-        3. Find and select the **agent** project (or relevant project with agent capabilities)
+        3. Find and select the **chat** project (same as Prelude -2-)
 
         4. In the left navigation, click **Networking → Routes**
 
-        5. Click on the agent interface route URL
+        5. Click on the **chat-openwebui** route URL
 
         6. Login with OpenShift using the **admin** user and password
 
-        **What is an agent?**
-        An agent is more than a chatbot. It can:
-        - Access external tools (calculators, databases, APIs)
-        - Make multi-step plans
-        - Execute actions autonomously
-        - Self-correct when errors occur
+        **What's new for agents?**
+        Behind the scenes, OpenShift has deployed MCP (Model Context Protocol) tools to this cluster:
+        - **MCP Gateway:** Routes tool calls between the LLM and tool servers
+        - **MCP Weather:** Provides weather forecast data
+        - **MCP Fast Tools:** Calculator, search, and utility functions
+        - **MCP OpenShift:** Kubernetes/OpenShift API access
 
-      title: Task 1 - Access the Agent Interface
+        These tools are running in the background, ready to be used by agents.
+
+      title: Task 1 - Access the Chat Interface
       review:
         instructions: |-
-          Did you successfully access the agent interface?
+          Did you successfully access OpenWebUI (same interface as the RAG quickstart)?
 
-        failedTaskHelp: If access failed, verify the project name and ensure the route is active. Check that the admin credentials are correct.
+        failedTaskHelp: This is the same interface from Prelude -2-. If access failed, verify the chat project exists and the route is active.
       summary:
         success: >-
-          Great! The agent interface is ready.
-        failed: Access failed. Verify the project and route settings.
+          Perfect! You're back in OpenWebUI where agent tools are available.
+        failed: Access failed. This should be the same route from the RAG quickstart.
 
     - description: |-
-        ### Explore Available Tools
+        ### Verify MCP Tools Are Running
 
-        Before creating an agent, let's see what tools are available. Agents become powerful when they have the right tools.
+        OpenShift deployed agent tools automatically using GitOps. Let's verify they're running.
 
-        **Common tools you might see:**
-        - **Calculator:** Perform mathematical operations (addition, multiplication, percentages, etc.)
-        - **Web Search:** Look up current information from the internet
-        - **Weather API:** Get weather forecasts for specific locations
-        - **Knowledge Base:** Query uploaded documents (from the RAG quickstart)
-        - **Python Executor:** Run code snippets for data processing
+        **Option A: Check via OpenShift Console (Recommended)**
+
+        1. In the **OpenShift Console**, navigate to **Home → Search**
+
+        2. Select **Project:** `mcp-system`
+
+        3. Search for **Pods** - you should see:
+           - `fast-mcp-tools-*` (calculator, utilities)
+           - `mcp-weather-*` (weather API)
+           - `mcp-openshift-*` (Kubernetes tools)
+
+        4. Check that pods are in **Running** status
+
+        5. Navigate to **Networking → Routes** to see the MCP gateway endpoint
+
+        **Option B: Check via OpenWebUI (Alternative)**
+
+        1. In OpenWebUI, click your **profile icon** (top right)
+
+        2. Go to **Admin Panel → Settings**
+
+        3. Look for **Functions** or **Tools** section
+
+        4. Check if MCP tools are listed (may require configuration in some deployments)
+
+        **What you're seeing:**
+        These are containerized microservices that provide tools to AI agents. Each tool:
+        - Has a specific function (weather, calculator, etc.)
+        - Exposes an API the LLM can call
+        - Runs independently in its own pod
+        - Is managed by OpenShift GitOps
+
+        **Key OpenShift concept:** Infrastructure-as-Code via ACM Policy and ArgoCD deployed these tools automatically when the cluster was provisioned.
+
+      title: Task 2 - Verify Agent Tools Are Deployed
+      review:
+        instructions: |-
+          Can you see MCP tool pods running in the mcp-system namespace?
+
+        failedTaskHelp: If pods aren't visible, check that you selected the "mcp-system" project in the console. The tools may still be deploying - wait 1-2 minutes and refresh.
+      summary:
+        success: >-
+          Excellent! MCP agent tools are running and ready to use.
+        failed: Tools not visible. Check the mcp-system namespace or wait for deployment to complete.
+
+    - description: |-
+        ### Configure OpenWebUI to Use MCP Tools
+
+        The tools are deployed, but we need to tell OpenWebUI how to access them. This connects the LLM to the MCP Gateway.
 
         **Steps:**
 
-        1. In the agent interface, look for a **Tools** or **Functions** section
+        1. In **OpenWebUI**, click your **profile icon** (top right)
 
-        2. **Browse the available tools** - note which ones are enabled
+        2. Go to **Settings → Functions** (or **Admin Panel → Functions** depending on version)
 
-        3. **Read the tool descriptions** carefully - the agent uses these same descriptions to decide when to use each tool
+        3. Look for **MCP** or **External Functions** section
 
-        4. Make sure at least these tools are available:
-           - **Web Search** (for finding current information)
-           - **Calculator** (for cost calculations)
-           - **Weather API** (if available - for trip planning)
+        4. **Add the MCP Gateway endpoint:**
+           - Gateway URL: Look for the route in the `mcp-system` namespace
+           - Or use internal service: `http://mcp-gateway.mcp-system.svc.cluster.local`
 
-        **Key insight:**
-        The agent doesn't "know" what tools do beyond reading their descriptions. Clear tool descriptions = better agent decisions.
+        5. **Test the connection** - you should see available tools listed:
+           - weather
+           - calculator
+           - search
+           - (and others)
 
-      title: Task 2 - Explore Available Tools
+        6. **Enable the tools** you want to use for the agent
+
+        **Alternative (if the above isn't available):**
+        Some OpenWebUI deployments auto-discover MCP tools. Try starting a conversation and typing a tool-related question like "What's the weather in Boston?" - if it works, tools are already connected.
+
+        **What's happening:**
+        You're configuring OpenWebUI to route tool calls through the MCP Gateway, which then routes them to the appropriate tool microservices.
+
+      title: Task 3 - Connect OpenWebUI to MCP Tools
       review:
         instructions: |-
-          Can you see the available tools and their descriptions?
+          Can you see MCP tools listed and enabled in OpenWebUI?
 
-        failedTaskHelp: If tools aren't visible, check if the agent interface has a "Tools", "Functions", or "Capabilities" section. Some interfaces show tools only when starting a conversation.
+        failedTaskHelp: If MCP configuration isn't visible, the deployment may have different settings. Try asking a test question in chat like "What is 5 + 3?" - if it calculates correctly, tools are working even without visible config.
       summary:
         success: >-
-          Perfect! You understand what tools the agent has access to.
-        failed: Tools section not found. Try starting a conversation first.
+          Perfect! OpenWebUI is now connected to the MCP agent tools.
+        failed: Configuration not found. Tools might be auto-configured - proceed to next task to test.
 
     - description: |-
         ### Execute the Trip Planning Task
@@ -166,7 +221,7 @@ spec:
 
         **This is the magic moment:** The agent is autonomously choosing tools, making API calls, and reasoning through a multi-step problem - all visible to you.
 
-      title: Task 3 - Execute the Trip Planning Task
+      title: Task 4 - Execute the Trip Planning Task
       review:
         instructions: |-
           Did the agent successfully provide weather, recommendations, and a cost calculation?
@@ -212,7 +267,7 @@ spec:
 
         **Key insight:** Unlike a black-box AI, agents show their work. Every decision is traceable.
 
-      title: Task 4 - Analyze the Agent's Decision-Making
+      title: Task 5 - Analyze the Agent's Decision-Making
       review:
         instructions: |-
           Can you identify which tools were called and in what order?
@@ -256,7 +311,7 @@ spec:
         - See if you can "stump" the agent
         - Notice when it asks for clarification vs makes assumptions
 
-      title: Task 5 - Try Your Own Multi-Step Challenge
+      title: Task 6 - Try Your Own Multi-Step Challenge
       review:
         instructions: |-
           Did you try your own multi-step challenge and observe how the agent handled it?

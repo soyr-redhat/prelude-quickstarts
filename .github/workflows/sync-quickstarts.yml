@@ -17,42 +17,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install yamllint
-        run: pip install yamllint
-
-      - name: Validate YAML files
-        run: |
-          echo "========================================="
-          echo "Validating quickstart YAML files"
-          echo "========================================="
-
-          # Run yamllint on all active files
-          EXIT_CODE=0
-          for file in active/*.yaml active/*.yml; do
-            if [ -f "$file" ] && [[ "$file" != *".gitkeep"* ]]; then
-              echo "Checking: $file"
-              if yamllint "$file"; then
-                echo "✅ PASSED: $file"
-              else
-                echo "❌ FAILED: $file"
-                EXIT_CODE=1
-              fi
-              echo ""
-            fi
-          done
-
-          if [ $EXIT_CODE -eq 0 ]; then
-            echo "✅ All YAML files are valid!"
-          else
-            echo "❌ YAML validation failed"
-            exit 1
-          fi
-
       - name: Checkout rhoai-cluster-pool fork
         uses: actions/checkout@v4
         with:

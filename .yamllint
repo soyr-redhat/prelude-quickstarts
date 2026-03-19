@@ -1,0 +1,46 @@
+---
+# yamllint configuration for Prelude Quickstarts
+extends: default
+
+rules:
+  # Allow long lines (markdown content can be long)
+  line-length:
+    max: 200
+    level: warning
+
+  # Allow trailing spaces (markdown sometimes uses them)
+  trailing-spaces: disable
+
+  # Be lenient with indentation in multi-line strings
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  # Allow comments without space after #
+  comments:
+    min-spaces-from-content: 1
+
+  # Allow empty values (can be intentional)
+  empty-values: disable
+
+  # Truthy values (on/off/yes/no/true/false)
+  truthy:
+    allowed-values: ['true', 'false']
+    check-keys: false
+
+  # Document start (---) is required
+  document-start:
+    present: true
+
+  # Allow duplicate keys (shouldn't happen but be lenient)
+  key-duplicates: enable
+
+  # Brackets and braces
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 1

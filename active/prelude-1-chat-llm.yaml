@@ -76,7 +76,7 @@ spec:
           You have completed this task.
         failed: Try the steps again.
   conclusion: >-
-    Congratulations! You successfully completed Chattin with an LLM quickstart.
+    Congratulations! You successfully completed the Chatting with an LLM quickstart.
 
     Let's keep going !
   nextQuickStart:
